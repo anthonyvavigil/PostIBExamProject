@@ -1,3 +1,5 @@
+import java.util.*;
+import java.awt.Color;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,14 +11,26 @@
  * @author Anthony Vigil
  */
 public class PostIBExamProject extends javax.swing.JFrame {
-
+    public ArrayList<Line> allLines;
+    public static int numOfLines;
+    public static int peopleInLine;
+    public static int numOfTellers;
+    public static boolean randomTellerValues;
+    public static int tellerValuesLowerBound;
+    public static int tellerValuesUpperBound;
+    
     /**
      * Creates new form PostIBExamProject
      */
     public PostIBExamProject() {
         initComponents();
     }
-
+    
+    
+    
+    
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -26,21 +40,174 @@ public class PostIBExamProject extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        numOfLinesDropDown = new javax.swing.JSpinner();
+        numOfLinesLabel = new javax.swing.JLabel();
+        peopleInLineLabel = new javax.swing.JLabel();
+        peopleInLineDropDown = new javax.swing.JSpinner();
+        randomTellerSpeedsCBox = new javax.swing.JCheckBox();
+        numOfTellersDropDown = new javax.swing.JSpinner();
+        numOfTellersLabel = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        canvas1 = new java.awt.Canvas();
+        drawingCanvas = new java.awt.Canvas();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        numOfLinesDropDown.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                numOfLinesDropDownStateChanged(evt);
+            }
+        });
+
+        numOfLinesLabel.setText("Number of Lines");
+
+        peopleInLineLabel.setText("People in Line");
+
+        peopleInLineDropDown.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                peopleInLineDropDownStateChanged(evt);
+            }
+        });
+
+        randomTellerSpeedsCBox.setText("Random teller speeds");
+        randomTellerSpeedsCBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                randomTellerSpeedsCBoxActionPerformed(evt);
+            }
+        });
+
+        numOfTellersDropDown.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                numOfTellersDropDownStateChanged(evt);
+            }
+        });
+
+        numOfTellersLabel.setText("Number of Tellers");
+
+        jLabel1.setText("From:");
+
+        jLabel2.setText("To:");
+
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 750, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(canvas1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(drawingCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, 1000, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(numOfLinesLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(numOfLinesDropDown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(peopleInLineLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(peopleInLineDropDown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(numOfTellersLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(numOfTellersDropDown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(randomTellerSpeedsCBox))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+                            .addComponent(jTextField1))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 550, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(numOfLinesDropDown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(numOfLinesLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(peopleInLineLabel)
+                    .addComponent(peopleInLineDropDown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(canvas1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(numOfTellersDropDown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(numOfTellersLabel))
+                        .addGap(130, 130, 130)
+                        .addComponent(randomTellerSpeedsCBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(20, Short.MAX_VALUE)
+                .addComponent(drawingCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, 700, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void numOfLinesDropDownStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_numOfLinesDropDownStateChanged
+        // TODO add your handling code here:
+        numOfLines = (int) numOfLinesDropDown.getValue();
+    }//GEN-LAST:event_numOfLinesDropDownStateChanged
+
+    private void peopleInLineDropDownStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_peopleInLineDropDownStateChanged
+        // TODO add your handling code here:
+        peopleInLine = (int) peopleInLineDropDown.getValue();
+    }//GEN-LAST:event_peopleInLineDropDownStateChanged
+
+    private void randomTellerSpeedsCBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_randomTellerSpeedsCBoxActionPerformed
+        // TODO add your handling code here:
+        randomTellerValues = !randomTellerValues;
+        System.out.println(randomTellerValues);
+    }//GEN-LAST:event_randomTellerSpeedsCBoxActionPerformed
+
+    private void numOfTellersDropDownStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_numOfTellersDropDownStateChanged
+        // TODO add your handling code here:
+        numOfTellers = (int) numOfTellersDropDown.getValue();
+    }//GEN-LAST:event_numOfTellersDropDownStateChanged
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+        tellerValuesLowerBound = Integer.valueOf(jTextField1.getText());
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+        tellerValuesUpperBound = Integer.valueOf(jTextField2.getText());
+    }//GEN-LAST:event_jTextField2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -72,16 +239,32 @@ public class PostIBExamProject extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PostIBExamProject().setVisible(true);
-                
-                
-                
-                
+                new PostIBExamProject().setVisible(true);         
                 
             }
         });
     }
+    public void initLines() {
+        int canvasHeight = drawingCanvas.getHeight(); int canvasWidth = drawingCanvas.getWidth();
+        
+        
+        
+    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private java.awt.Canvas canvas1;
+    private java.awt.Canvas drawingCanvas;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JSpinner numOfLinesDropDown;
+    private javax.swing.JLabel numOfLinesLabel;
+    private javax.swing.JSpinner numOfTellersDropDown;
+    private javax.swing.JLabel numOfTellersLabel;
+    private javax.swing.JSpinner peopleInLineDropDown;
+    private javax.swing.JLabel peopleInLineLabel;
+    private javax.swing.JCheckBox randomTellerSpeedsCBox;
     // End of variables declaration//GEN-END:variables
 }

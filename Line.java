@@ -59,7 +59,7 @@ public class Line {
         return id;
     }
     public double getEstimatedTime() {
-        double tot = 0;
+        double tot = 0.0;
         Queue<customer> temp = customers;
         
         for(int i = 0; i < temp.size(); i++) {
