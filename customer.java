@@ -12,10 +12,10 @@ import java.util.Queue;
  * @author Anthony Vigil
  */
 public class customer {
-    String id;
-    int idInt;
-    Line line;
-    double timeToProcess; //represents seconds that this user will take to order
+    private String id;
+    private int idInt;
+    private Line line;
+    private double timeToProcess; //represents seconds that this user will take to order.
     
     public customer(Line line) {
         this.line = line;
@@ -25,6 +25,7 @@ public class customer {
         this.timeToProcess = timeToProcess;
     }
     
+    //set methods
     public void setTimeToProcess(double timeToProcess) {
         this.timeToProcess = timeToProcess;
     }
@@ -38,6 +39,7 @@ public class customer {
         this.idInt = idInt;
     }
     
+    //get methods
     public int getIdInt() {
         return idInt;
     }
