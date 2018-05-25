@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package postibexamproject;
 
 /**
  *
- * @author Henry Estberg
+ * @author Henry Estberg and Tony Vigil
  */
 public class teller {
     private String id;

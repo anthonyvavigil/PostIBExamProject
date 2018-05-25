@@ -16,6 +16,7 @@ public class Line {
     String id;
     int idInt;
     int size;
+    teller teller;
     
     
     public Line() {
@@ -35,6 +36,9 @@ public class Line {
     
     
     
+    public void setTeller(teller teller) {
+    	this.teller = teller;
+    }
     public void addCustomer(customer c) {
         size++;
         customers.add(c);
@@ -46,6 +50,10 @@ public class Line {
         this.idInt = idInt;
     }
     
+    
+    public teller getTeller() {
+    	return teller;
+    }
     public Queue<customer> getCustomerQueue() {
         return customers;
     }
@@ -60,10 +68,12 @@ public class Line {
     }
     public double getEstimatedTime() {
         double tot = 0;
+        double tellerConstant = teller.getTimeToProcess();
         Queue<customer> temp = customers;
         
         for(int i = 0; i < temp.size(); i++) {
-            tot += temp.remove().getTimeToProcess();
+            tot += 
+            		((temp.remove().getTimeToProcess() * tellerConstant)/10); //time is customer * teller /10
         }
         
         return tot;
