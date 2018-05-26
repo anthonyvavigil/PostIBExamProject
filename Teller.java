@@ -1,0 +1,43 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author Henry Estberg and Tony Vigil
+ */
+public class Teller {
+    private int idInt;
+    private int speed; //represents seconds it takes for the teller to deal with an order.
+    private int transTime; //Time remaining to process current transaction
+    
+    //This is meant to be instantiated only with complete paramaters at the beginning of the simulation
+    public Teller(int idInt, int speed) { 
+    	this.idInt = idInt;
+        this.speed = speed;
+    }
+
+    //set methods
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    } 
+    public void setId(int idInt) {
+        this.idInt = idInt;
+    }
+    public void setTransTime(int transTime) {
+        this.transTime = transTime;
+    }
+    
+    //get methods
+    public int getIdInt() {
+        return idInt;
+    }
+    public int getSpeed() {
+        return speed;
+    }
+    public int getTransTime() {
+        return this.transTime;
+    }
+}
