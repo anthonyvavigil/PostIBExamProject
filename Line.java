@@ -12,34 +12,35 @@ import java.util.*;
  * @author Anthony Vigil
  */
 public class Line {
-    Queue<customer> customers;
+    Queue<Customer> customers;
     String id;
     int idInt;
     int size;
-    teller teller;
+    Teller teller;
+    
     
     
     public Line() {
         size = 0;
     }
-    public Line(Queue<customer> customers) {
+    public Line(Queue<Customer> customers) {
         this.customers = customers;
     }
     public Line(String id) {
         this.id = id;
         size = 0;
     }
-    public Line(String id, Queue<customer> customers) {
+    public Line(String id, Queue<Customer> customers) {
         this.id = id;
         this.customers = customers;
     }
     
     
-    
-    public void setTeller(teller teller) {
+    //set methods
+    public void setTeller(Teller teller) {
     	this.teller = teller;
     }
-    public void addCustomer(customer c) {
+    public void addCustomer(Customer c) {
         size++;
         customers.add(c);
     }
@@ -51,10 +52,12 @@ public class Line {
     }
     
     
-    public teller getTeller() {
+    
+    //get methods
+    public Teller getTeller() {
     	return teller;
     }
-    public Queue<customer> getCustomerQueue() {
+    public Queue<Customer> getCustomerQueue() {
         return customers;
     }
     public int getSize() {
@@ -69,7 +72,7 @@ public class Line {
     public double getEstimatedTime() {
         double tot = 0;
         double tellerConstant = teller.getTimeToProcess();
-        Queue<customer> temp = customers;
+        Queue<Customer> temp = customers;
         
         for(int i = 0; i < temp.size(); i++) {
             tot += 
@@ -78,6 +81,7 @@ public class Line {
         
         return tot;
     }
+    
     
     
 }

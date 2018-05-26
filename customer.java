@@ -13,16 +13,17 @@ import java.util.Random;
  *
  * @author Anthony Vigil
  */
-public class customer {
+public class Customer {
     private String id;
     private int idInt;
     private Line line;
     private double timeToProcess; //represents seconds that this user will take to order.
+    private long tickStart;
     
-    public customer(Line line) {
+    public Customer(Line line) {
         this.line = line;
     }
-    public customer(Line line, double timeToProcess) {
+    public Customer(Line line, double timeToProcess) {
         this.line = line;
         this.timeToProcess = timeToProcess;
     }
@@ -40,6 +41,10 @@ public class customer {
     public void setId(int idInt) {
         this.idInt = idInt;
     }
+    public void setTickStart(long tick) {
+        this.tickStart = tick;
+    }
+    
     //assigns the customer to a line based on number of people in lines
     public void simpleAssign(ArrayList<Line> lines) {
     	int min = lines.get(0).getSize();
@@ -85,4 +90,7 @@ public class customer {
     public Line getLine() {
         return line;
     }    
+    public long getTickStart() {
+        return this.tickStart;
+    }
 }

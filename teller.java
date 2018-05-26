@@ -8,13 +8,14 @@
  *
  * @author Henry Estberg and Tony Vigil
  */
-public class teller {
+public class Teller {
     private String id;
     private int idInt;
     private double timeToProcess; //represents seconds it takes for the teller to deal with an order.
+    private int transTime; //Time remaining to process current transaction
     
     //This is meant to be instantiated only with complete paramaters at the beginning of the simulation
-    public teller(String id, int idInt, double timeToProcess) { 
+    public Teller(String id, int idInt, double timeToProcess) { 
         this.timeToProcess = timeToProcess;
     }
 
@@ -28,6 +29,9 @@ public class teller {
     public void setId(int idInt) {
         this.idInt = idInt;
     }
+    public void setTransTime(int transTime) {
+        this.transTime = transTime;
+    }
     
     //get methods
     public int getIdInt() {
@@ -38,5 +42,8 @@ public class teller {
     }
     public double getTimeToProcess() {
         return timeToProcess;
+    }
+    public int getTransTime() {
+        return this.transTime;
     }
 }
