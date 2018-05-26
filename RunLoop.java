@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package postibexamproject;
+
 
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -15,17 +15,30 @@ import java.util.logging.Logger;
  */
 public class RunLoop {
     
-    public RunLoop(int lines){
-        this.lines = lines;
+    public RunLoop (int l, int t) {
+        this.lineNumber = l;
+        this.tellerNumber = t;
     }
     
     private long tick;
-    private int lines;
+    private int lineNumber;
+    private int tellerNumber;
+
+  
     
     public void run() {
         tick = 0;
         ArrayList<Teller> tellers = new ArrayList();
+        ArrayList<Line> lines = new ArrayList();
         
+        for(int k = 0; k < lineNumber; k++) {
+            lines.add(new Line());
+        }
+        
+        //The constructor requires the random generation for teller speed to be done before item generation
+        //for(int l = 0; l < tellerNumber; l++) {
+        //    tellers.add(new Teller());
+        //}
         
         
         while(true) {
@@ -38,7 +51,7 @@ public class RunLoop {
             
             for(Teller tell : tellers) {
                 if(tell.getTransTime() == 0){
-                    
+                    //send the next customer in line to the teller
                 }
             }
             /*

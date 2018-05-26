@@ -106,8 +106,8 @@ public class PostIBExamProject extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        RunLoop run = new RunLoop();
-        
+        RunLoop run = new RunLoop((int)jSpinner1.getValue(), 3);
+        run.run();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -148,6 +148,7 @@ public class PostIBExamProject extends javax.swing.JFrame {
                 
             }
         });
+        
         
     }
 

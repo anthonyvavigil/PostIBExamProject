@@ -18,7 +18,7 @@ public class Customer {
     private int idInt;
     private Line line;
     private double timeToProcess; //represents seconds that this user will take to order.
-    private long tickStart;
+    private long tickStart; //at what point the customer entered the line
     
     public Customer(Line line) {
         this.line = line;
