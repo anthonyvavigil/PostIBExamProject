@@ -25,9 +25,13 @@ public class RunLoop {
 	public static final int tellerSpeedsLowerBound = 10;
 	public static final int customerSpeedsUpperBound = 100;
 	public static final int customerSpeedsLowerBound = 100;
+        
+        //Maximum and minimum simulation times
+        public static final int minSimulationTime = 10;
+        public static final int maxSimulationTime = 100;
 
 	public RunLoop(String assignmentType, int numCustomers, int numLines, boolean isFixedTellerSpeeds,
-			boolean isFixedCustomerSpeeds, String spawnType, int spawnRate) {
+			boolean isFixedCustomerSpeeds, String spawnType, int spawnRate, int simulationTime) {
 		this.numLines = numLines;
 		this.numCustomers = numCustomers;
 		this.numLines = numLines;
@@ -35,6 +39,7 @@ public class RunLoop {
 		this.isFixedCustomerSpeeds = isFixedCustomerSpeeds;
 		this.spawnType = spawnType;
 		this.spawnRate = spawnRate;
+                this.simulationTime = simulationTime;
 	}
 
 	private long tick;
@@ -45,6 +50,7 @@ public class RunLoop {
 	private boolean isFixedCustomerSpeeds;
 	private String spawnType;
 	private int spawnRate;
+        private int simulationTime;
 	private boolean simulationRunning = true;
 	public ArrayList<Teller> allTellers = new ArrayList();
 	public ArrayList<Customer> allCustomers = new ArrayList();
@@ -60,8 +66,9 @@ public class RunLoop {
 		while (simulationRunning) {
 			try {
 				Thread.sleep(20);
-				tick += 20;
+				tick += 1;
 				updateLines();
+                                checkTime(tick);
 			} catch (InterruptedException ex) {
 				Logger.getLogger(RunLoop.class.getName()).log(Level.SEVERE, null, ex);
 			}
@@ -77,6 +84,7 @@ public class RunLoop {
 		addCustomers(numCustomers, isFixedCustomerSpeeds);
 		addLines(numLines);
 		assignCustomers(assignmentType);
+                setMaxTime();
 	}
 
 	// initialize objects
@@ -111,6 +119,7 @@ public class RunLoop {
 			allCustomers.add(temp);
 		}
 	}
+          
 
 	// adds an empty line for each teller
 	public void addLines(int lNum) {
@@ -138,6 +147,22 @@ public class RunLoop {
 			allCustomers.add(i, temp);
 		}
 	}
+        
+        
+        public void setMaxTime() {
+            if (simulationTime > maxSimulationTime) {
+                simulationTime = maxSimulationTime;
+            } else if (simulationTime < minSimulationTime) {
+                simulationTime = minSimulationTime;
+            }
+        }
+        
+        //checks if the simulation has hit its time limit
+        public void checkTime(long tock) {
+            if((long) simulationTime *1000 <= tock) {
+                simulationRunning =false;
+            }
+        }
 
 	public void updateLines() {
 		// update each line, checking to see which actions need to be performed

@@ -18,17 +18,14 @@
 	-removed String id - redundancy
 	
 -RunLoop
-	-removed second parameter from runLoop object - line number and teller numbers are equal
-	-added initialization methods
-		-addTellers
-		-addCustomers
-		-addLines
-		-assignCustomers
+	
+	-added initialization method
+                -setMaxTime
 	
 	
 -Miscellaneous
-	-need you to add a quit, or return to main menu button, so that we don't have a while(true) loop
-	-new RunLoop parameters are, in order
+	
+	-new RunLoop parameters are, in order (added simulationTime, which addresses the quit issue)
 		-assignmentType: String
 		-numCustomers: int
 		-numLines: int
@@ -36,8 +33,11 @@
 		-isFixedCustomerSpeeds: boolean
 		-spawnType: String
 		-spawnRate: int
+                -simulationTime: int
 	-Settings options needed are as follows
-		-type of assignment - random, simple, or time
+                -length of simulation desired - jSpinner
+                        -send as int
+		-type of assignment - random, simple, or time - PARTIALLY IMPLEMENTED
 			-if random, send String "RANDOM"
 			-if simple, send String "SIMPLE"
 			-if time, send String "TIME"
