@@ -35,13 +35,13 @@
 		-spawnRate: int
                 -simulationTime: int
 	-Settings options needed are as follows
-                -length of simulation desired - jSpinner
+                -length of simulation desired - jSpinner - IMPLEMENTED
                         -send as int
-		-type of assignment - random, simple, or time - PARTIALLY IMPLEMENTED
+		-type of assignment - random, simple, or time - IMPLEMENTED
 			-if random, send String "RANDOM"
 			-if simple, send String "SIMPLE"
 			-if time, send String "TIME"
-		-number of customers - JSpinner
+		-number of customers - JSpinner - IMPLEMENTED 
 			-send as int
 		-number of lines - JSpinner - ALREADY IMPLEMENTED
 			-send as int

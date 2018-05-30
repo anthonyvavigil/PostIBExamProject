@@ -56,7 +56,7 @@ public class RunLoop {
 	public ArrayList<Customer> allCustomers = new ArrayList();
 	public ArrayList<Line> allLines = new ArrayList();
 
-	public void run() {
+	public void runSim() {
 		tick = 0;
 		initializationMethods();
 

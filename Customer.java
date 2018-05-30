@@ -26,7 +26,7 @@ public class Customer {
     }
     
     //set methods
-    public void setTimeToProcess(int speed) {
+    public void setSpeed(int speed) {
     	this.speed = speed;
     }
     public void setLine(Line line) {
