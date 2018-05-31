@@ -16,7 +16,8 @@ import java.util.Random;
 public class Customer {
     private int idInt;
     private Line line;
-    private int speed; //represents seconds that this user will take to order.
+    private int speed; // represents customer's speed
+    private int transTime; // how long the user will take to order
     private long tickStart; //at what point the customer entered the line
     private long tickEnd; //at what point the customer exited the line
     
@@ -26,6 +27,9 @@ public class Customer {
     }
     
     //set methods
+    public void setTransTime(int transTime) {
+    	this.transTime= transTime;
+    }
     public void setSpeed(int speed) {
     	this.speed = speed;
     }
@@ -37,6 +41,9 @@ public class Customer {
     }
     public void setTickStart(long tick) {
         this.tickStart = tick;
+    }
+    public void setTickEnd(long tick) {
+    	this.tickEnd = tick;
     }
     
     //assigns the customer to a line based on number of people in lines
@@ -69,9 +76,16 @@ public class Customer {
     	int index = r.nextInt(lines.size());
     	this.line = lines.get(index);
     }
+    public int calcTransTime() { // calculates time for this customer
+    	transTime = (speed * line.getTeller().getSpeed())/10;
+    	return transTime;
+    }
     
     
-    //get methods
+    //get methods    
+    public int getTransTime() {
+    	return transTime;
+    }
     public int getIdInt() {
         return idInt;
     }
@@ -83,5 +97,8 @@ public class Customer {
     }    
     public long getTickStart() {
         return this.tickStart;
+    }
+    public long getTickEnd() {
+    	return this.tickEnd;
     }
 }

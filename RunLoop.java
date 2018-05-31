@@ -24,14 +24,15 @@ public class RunLoop {
 	public static final int tellerSpeedsUpperBound = 100;
 	public static final int tellerSpeedsLowerBound = 10;
 	public static final int customerSpeedsUpperBound = 100;
-	public static final int customerSpeedsLowerBound = 100;
-        
-        //Maximum and minimum simulation times
-        public static final int minSimulationTime = 10;
-        public static final int maxSimulationTime = 100;
+	public static final int customerSpeedsLowerBound = 10;
+
+	// Maximum and minimum simulation times
+	public static final int minSimulationTime = 10;
+	public static final int maxSimulationTime = 100;
 
 	public RunLoop(String assignmentType, int numCustomers, int numLines, boolean isFixedTellerSpeeds,
 			boolean isFixedCustomerSpeeds, String spawnType, int spawnRate, int simulationTime) {
+		this.assignmentType = assignmentType;
 		this.numLines = numLines;
 		this.numCustomers = numCustomers;
 		this.numLines = numLines;
@@ -39,9 +40,19 @@ public class RunLoop {
 		this.isFixedCustomerSpeeds = isFixedCustomerSpeeds;
 		this.spawnType = spawnType;
 		this.spawnRate = spawnRate;
-                this.simulationTime = simulationTime;
+		this.simulationTime = simulationTime;
+		bugTesting();
 	}
 
+	public void bugTesting() {
+		this.assignmentType = "RANDOM";
+		this.numLines = 3;
+		this.numCustomers = 1000;
+		this.isFixedCustomerSpeeds = false;
+		this.isFixedTellerSpeeds = false;
+		this.simulationTime = 10000;
+	}
+	
 	private long tick;
 	private String assignmentType;
 	private int numCustomers;
@@ -50,7 +61,7 @@ public class RunLoop {
 	private boolean isFixedCustomerSpeeds;
 	private String spawnType;
 	private int spawnRate;
-        private int simulationTime;
+	private int simulationTime;
 	private boolean simulationRunning = true;
 	public ArrayList<Teller> allTellers = new ArrayList();
 	public ArrayList<Customer> allCustomers = new ArrayList();
@@ -60,15 +71,17 @@ public class RunLoop {
 		tick = 0;
 		initializationMethods();
 
-		// The constructor requires the random generation for teller speed to be done
+		// The constructor requires the random generation for teller speed to be
+		// done
 		// before item generation
 
 		while (simulationRunning) {
+			System.out.println("running while");
 			try {
 				Thread.sleep(20);
 				tick += 1;
 				updateLines();
-                                checkTime(tick);
+				checkTime(tick);
 			} catch (InterruptedException ex) {
 				Logger.getLogger(RunLoop.class.getName()).log(Level.SEVERE, null, ex);
 			}
@@ -83,8 +96,12 @@ public class RunLoop {
 		addTellers(numLines, isFixedTellerSpeeds);
 		addCustomers(numCustomers, isFixedCustomerSpeeds);
 		addLines(numLines);
-		assignCustomers(assignmentType);
-                setMaxTime();
+		assignCustomers(assignmentType); // need to be merged into one method
+		addCustomersToLineObjects();
+		firstCustomers();
+
+		setMaxTime();
+		System.out.println("initialized");
 	}
 
 	// initialize objects
@@ -119,7 +136,6 @@ public class RunLoop {
 			allCustomers.add(temp);
 		}
 	}
-          
 
 	// adds an empty line for each teller
 	public void addLines(int lNum) {
@@ -127,15 +143,16 @@ public class RunLoop {
 			// attaches a teller to this line object
 			Teller temp = allTellers.get(i);
 			allLines.add(new Line(i, temp));
+			System.out.println("adding line: " + i);
 		}
 	}
 
 	public void assignCustomers(String assignType) {
 		// assigns customers to lines
-		
+
 		for (int i = 0; i < allCustomers.size(); i++) {
 			Customer temp = allCustomers.get(i);
-			
+
 			if (assignType.toUpperCase().equals("SIMPLE")) {
 				temp.simpleAssign(allLines);
 			} else if (assignType.toUpperCase().equals("TIME")) {
@@ -144,27 +161,71 @@ public class RunLoop {
 				temp.randomAssign(allLines);
 			}
 			allCustomers.remove(i);
+			temp.setTransTime(temp.calcTransTime());
+			
 			allCustomers.add(i, temp);
 		}
 	}
-        
-        
-        public void setMaxTime() {
-            if (simulationTime > maxSimulationTime) {
-                simulationTime = maxSimulationTime;
-            } else if (simulationTime < minSimulationTime) {
-                simulationTime = minSimulationTime;
-            }
-        }
-        
-        //checks if the simulation has hit its time limit
-        public void checkTime(long tock) {
-            if((long) simulationTime *1000 <= tock) {
-                simulationRunning =false;
-            }
-        }
+
+	public void addCustomersToLineObjects() { // does what the method's called
+		for (int i = 0; i < allCustomers.size(); i++) {
+			Customer temp = allCustomers.get(i);
+			Line tempL = temp.getLine();
+			if (allLines.indexOf(tempL) >= 0) {
+				System.out.println("Adding customer: " + temp.getIdInt() + " to line: " + tempL.teller.getIdInt());
+				allLines.get(allLines.indexOf(tempL)).addCustomer(temp);
+			}
+		}
+	}
+
+	public void setMaxTime() {
+		if (simulationTime > maxSimulationTime) {
+			simulationTime = maxSimulationTime;
+		} else if (simulationTime < minSimulationTime) {
+			simulationTime = minSimulationTime;
+		}
+	}
+
+	// checks if the simulation has hit its time limit
+	public void checkTime(long tock) {
+		if ((long) simulationTime * 1000 <= tock) {
+			simulationRunning = false;
+		}
+	}
+
+	public void firstCustomers() {
+		for (int i = 0; i < allLines.size(); i++) {
+			if (!allLines.get(i).customers.isEmpty()) {
+				allLines.get(i).setCurrentCustomer(0);
+				allLines.get(i).currentCustomer.setTickStart(0);
+				allLines.get(i).getCustomerQueue().get(0).setTickStart(0);
+			}
+		}
+	}
 
 	public void updateLines() {
 		// update each line, checking to see which actions need to be performed
+		for (int i = 0; i < allLines.size(); i++) {
+			Line tempL = allLines.get(i);
+			Teller tempT = tempL.getTeller();
+			Customer tempC = tempL.getCurrentCustomer();
+			System.out.println(tempC.getIdInt());
+
+			int custInd = tempL.getCustomerQueue().indexOf(tempC);
+			System.out.println(tick);
+			if(tick == simulationTime) { // if the simulation has ended
+				
+			}			
+			else if (tick - tempC.getTickStart() >= tempC.getTransTime()) { // if the user is done being in the line, switch to the next user
+				allLines.get(i).getCurrentCustomer().setTickEnd(tick);
+				if (allLines.get(i).getCustomerQueue().indexOf(tempC) < allLines.get(i).getCustomerQueue().size() - 1) { // if there's another customer to get
+					allLines.get(i).nextCustomer();
+					allLines.get(i).getCurrentCustomer().setTickStart(tick);
+					allLines.get(i).getCustomerQueue()
+							.get(allLines.get(i).getCustomerQueue().indexOf(allLines.get(i).getCurrentCustomer()))
+							.setTickStart(tick);
+				}
+			}
+		}
 	}
 }
