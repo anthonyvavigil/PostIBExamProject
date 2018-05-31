@@ -19,7 +19,6 @@ public class Line {
     Teller teller;
     
     
-    
     public Line(int idInt, Teller teller) {
     	this.idInt = idInt;
     	this.teller = teller;
@@ -52,6 +51,14 @@ public class Line {
     
     
     //get methods
+    public boolean hasNextCustomer() {
+    	int index = customers.indexOf(currentCustomer);
+    	if(index < customers.size()-1) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
     public void nextCustomer() {
     	int index = customers.indexOf(currentCustomer)+1;
     	if(index < customers.size()) {
