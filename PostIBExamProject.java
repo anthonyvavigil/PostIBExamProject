@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -212,10 +213,19 @@ public class PostIBExamProject extends javax.swing.JFrame {
         randTeller = !jCheckBox1.isSelected();
         randCustomer = !jCheckBox2.isSelected();
         
-   
+        
+
+        JOptionPane.showMessageDialog(jTabbedPane1,
+                            "The simulation is running",
+                            "",
+                            JOptionPane.INFORMATION_MESSAGE);
+        
         
         RunLoop run = new RunLoop(lAssignment, customerNum, lines, randTeller, randCustomer, cGeneration, cGenRate, simLength);
         run.runSim();    
+        
+        System.exit(0);
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
