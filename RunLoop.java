@@ -28,7 +28,7 @@ public class RunLoop {
 
 	// Maximum and minimum simulation times
 	public static final int minSimulationTime = 10;
-	public static final int maxSimulationTime = 100000;
+	public static final int maxSimulationTime = 1000000000;
 
 	public RunLoop(String assignmentType, int numCustomers, int numLines, boolean isFixedTellerSpeeds,
 			boolean isFixedCustomerSpeeds, String spawnType, int spawnRate, int simulationTime) {
@@ -40,17 +40,17 @@ public class RunLoop {
 		this.isFixedCustomerSpeeds = isFixedCustomerSpeeds;
 		this.spawnType = spawnType;
 		this.spawnRate = spawnRate;
-		this.simulationTime = simulationTime;
+		this.simulationTime = 100000000; // not changeable by user because that'd be stupid
 		bugTesting();
 	}
 
 	public void bugTesting() {
-		this.assignmentType = "RANDOM";
-		this.numLines = 3;
-		this.numCustomers = 10;
+		this.assignmentType = "SIMPLE";
+		this.numLines = 15;
+		this.numCustomers = 10000;
 		this.isFixedCustomerSpeeds = false;
 		this.isFixedTellerSpeeds = false;
-		this.simulationTime = 10000;
+		this.simulationTime = 1000000000;
 	}
 	
 	private long tick;
@@ -77,14 +77,14 @@ public class RunLoop {
 
 		while (simulationRunning) {
 			System.out.println("running while");
-			try {
+			/*try {
 				Thread.sleep(20);
-				tick += 1;
-				updateLines();
-				checkTime(tick);
 			} catch (InterruptedException ex) {
 				Logger.getLogger(RunLoop.class.getName()).log(Level.SEVERE, null, ex);
-			}
+			}*/
+			tick += 1;
+			updateLines();
+			checkTime(tick);
 		}
 		endSimulation();
 	}
@@ -97,7 +97,7 @@ public class RunLoop {
 		addTellers(numLines, isFixedTellerSpeeds);
 		addCustomers(numCustomers, isFixedCustomerSpeeds);
 		addLines(numLines);
-		assignCustomers(assignmentType); addCustomersToLineObjects(); // need to be merged into one method
+		assignCustomers(assignmentType); //addCustomersToLineObjects(); // need to be merged into one method
 		firstCustomers();
 
 		setMaxTime();
@@ -164,6 +164,7 @@ public class RunLoop {
 			temp.setTransTime(temp.calcTransTime());
 			
 			allCustomers.add(i, temp);
+			addCustomersToLineObjects();
 		}
 	}
 
@@ -172,8 +173,11 @@ public class RunLoop {
 			Customer temp = allCustomers.get(i);
 			Line tempL = temp.getLine();
 			if (allLines.indexOf(tempL) >= 0) {
-				System.out.println("Adding customer: " + temp.getIdInt() + " to line: " + tempL.teller.getIdInt());
-				allLines.get(allLines.indexOf(tempL)).addCustomer(temp);
+				
+				if(!allLines.get(allLines.indexOf(tempL)).customers.contains(temp)) {
+					System.out.println("Adding customer: " + temp.getIdInt() + " to line: " + tempL.teller.getIdInt());
+					allLines.get(allLines.indexOf(tempL)).addCustomer(temp);
+				}
 			}
 		}
 	}
