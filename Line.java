@@ -13,21 +13,24 @@ import java.util.*;
  */
 public class Line {
     ArrayList<Customer> customers = new ArrayList();
+    ArrayList<Teller> tellers = new ArrayList();
     int idInt;
     int size;
+    int index;
     Customer currentCustomer;
-    Teller teller;
     
     
-    public Line(int idInt, Teller teller) {
+    public Line(int idInt) {
     	this.idInt = idInt;
-    	this.teller = teller;
     }
     
     
     //set methods
-    public void setTeller(Teller teller) {
-    	this.teller = teller;
+    public void setTellers(ArrayList<Teller> tellers) {
+    	this.tellers = tellers;
+    }
+    public void addTeller(Teller teller) {
+    	tellers.add(teller);
     }
     public void addCustomer(Customer c) {
         size++;
@@ -35,6 +38,9 @@ public class Line {
     }
     public void setId(int idInt) {
         this.idInt = idInt;
+    }
+    public void setIndex(int index) {
+    	this.index = index;
     }
     public void setCurrentCustomer(int index) {
     	System.out.println("happening");
@@ -68,8 +74,8 @@ public class Line {
     public Customer getCurrentCustomer() {
     	return currentCustomer;
     }
-    public Teller getTeller() {
-    	return teller;
+    public ArrayList<Teller> getTellers() {
+    	return tellers;
     }
     public ArrayList<Customer> getCustomerQueue() {
         return customers;
@@ -80,9 +86,12 @@ public class Line {
     public int getIdInt() {
         return idInt;
     }
-    public double getEstimatedTime() {
+    public int getIndex() {
+    	return index;
+    }
+   /* public double getEstimatedTime() {
         double tot = 0;
-        double tellerConstant = teller.getSpeed();
+        double tellerConstant = tellers.getSpeed();
         ArrayList<Customer> temp = customers;
         
         for(int i = 0; i < temp.size(); i++) {
@@ -91,7 +100,7 @@ public class Line {
         }
         
         return tot;
-    }
+    }*/
     
     
     

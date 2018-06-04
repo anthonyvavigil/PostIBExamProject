@@ -31,7 +31,7 @@ public class RunLoop {
 	public static final int maxSimulationTime = 1000000000;
 
 	public RunLoop(String assignmentType, int numCustomers, int numLines, boolean isFixedTellerSpeeds,
-			boolean isFixedCustomerSpeeds, String spawnType, int spawnRate, int simulationTime) {
+			boolean isFixedCustomerSpeeds, String spawnType, int spawnRate, int simulationTime, int numTellers) {
 		this.assignmentType = assignmentType;
 		this.numLines = numLines;
 		this.numCustomers = numCustomers;
@@ -40,23 +40,27 @@ public class RunLoop {
 		this.isFixedCustomerSpeeds = isFixedCustomerSpeeds;
 		this.spawnType = spawnType;
 		this.spawnRate = spawnRate;
-		this.simulationTime = 100000000; // not changeable by user because that'd be stupid
+		this.simulationTime = 100000000; // not changeable by user because
+											// that'd be stupid
+		this.numTellers = numTellers;
 		bugTesting();
 	}
 
 	public void bugTesting() {
-		this.assignmentType = "SIMPLE";
-		this.numLines = 15;
+		this.assignmentType = "RANDOM";
+		this.numLines = 3;
 		this.numCustomers = 1000;
 		this.isFixedCustomerSpeeds = false;
 		this.isFixedTellerSpeeds = false;
 		this.simulationTime = 1000000000;
+		this.numTellers = 10;
 	}
-	
+
 	private long tick;
 	private String assignmentType;
 	private int numCustomers;
 	private int numLines;
+	private int numTellers;
 	private boolean isFixedTellerSpeeds;
 	private boolean isFixedCustomerSpeeds;
 	private String spawnType;
@@ -77,11 +81,11 @@ public class RunLoop {
 
 		while (simulationRunning) {
 			System.out.println("running while");
-			/*try {
-				Thread.sleep(20);
-			} catch (InterruptedException ex) {
-				Logger.getLogger(RunLoop.class.getName()).log(Level.SEVERE, null, ex);
-			}*/
+			/*
+			 * try { Thread.sleep(20); } catch (InterruptedException ex) {
+			 * Logger.getLogger(RunLoop.class.getName()).log(Level.SEVERE, null,
+			 * ex); }
+			 */
 			tick += 1;
 			updateLines();
 			checkTime(tick);
@@ -94,10 +98,12 @@ public class RunLoop {
 	 */
 
 	public void initializationMethods() {
-		addTellers(numLines, isFixedTellerSpeeds);
-		addCustomers(numCustomers, isFixedCustomerSpeeds);
 		addLines(numLines);
-		assignCustomers(assignmentType); //addCustomersToLineObjects(); // need to be merged into one method
+		addTellers(numTellers, isFixedTellerSpeeds);
+		assignTellers();
+		addCustomers(numCustomers, isFixedCustomerSpeeds);
+		assignCustomers(assignmentType); // addCustomersToLineObjects(); // need
+											// to be merged into one method
 		firstCustomers();
 
 		setMaxTime();
@@ -105,6 +111,18 @@ public class RunLoop {
 	}
 
 	// initialize objects
+
+	// assigns tellers to line objects
+	public void assignTellers() {
+		int count = 0;
+		while (count < allTellers.size()) {
+			int lineindex = count % allLines.size();
+			allLines.get(lineindex).addTeller(allTellers.get(count));
+			System.out.println("assigning teller " + allTellers.get(count).getIdInt() + " to line "
+					+ allLines.get(lineindex).idInt);
+			count++;
+		}
+	}
 
 	// adds tellers to arrayList of all tellers
 	public void addTellers(int tNum, boolean isFixedSpeed) {
@@ -137,12 +155,11 @@ public class RunLoop {
 		}
 	}
 
-	// adds an empty line for each teller
+	// adds an empty line for each number of lines
 	public void addLines(int lNum) {
 		for (int i = 0; i < lNum; i++) {
 			// attaches a teller to this line object
-			Teller temp = allTellers.get(i);
-			allLines.add(new Line(i, temp));
+			allLines.add(new Line(i));
 			System.out.println("adding line: " + i);
 		}
 	}
@@ -155,14 +172,15 @@ public class RunLoop {
 
 			if (assignType.toUpperCase().equals("SIMPLE")) {
 				temp.simpleAssign(allLines);
-			} else if (assignType.toUpperCase().equals("TIME")) {
-				temp.timeAssign(allLines);
-			} else if (assignType.toUpperCase().equals("RANDOM")) {
+			} /*
+				 * else if (assignType.toUpperCase().equals("TIME")) {
+				 * temp.timeAssign(allLines); }
+				 */else if (assignType.toUpperCase().equals("RANDOM")) {
 				temp.randomAssign(allLines);
 			}
 			allCustomers.remove(i);
-			temp.setTransTime(temp.calcTransTime());
-			
+			// temp.setTransTime(temp.calcTransTime());
+
 			allCustomers.add(i, temp);
 			addCustomersToLineObjects();
 		}
@@ -173,9 +191,9 @@ public class RunLoop {
 			Customer temp = allCustomers.get(i);
 			Line tempL = temp.getLine();
 			if (allLines.indexOf(tempL) >= 0) {
-				
-				if(!allLines.get(allLines.indexOf(tempL)).customers.contains(temp)) {
-					System.out.println("Adding customer: " + temp.getIdInt() + " to line: " + tempL.teller.getIdInt());
+
+				if (!allLines.get(allLines.indexOf(tempL)).customers.contains(temp)) {
+					System.out.println("Adding customer: " + temp.getIdInt() + " to line: " + tempL.getIdInt());
 					allLines.get(allLines.indexOf(tempL)).addCustomer(temp);
 				}
 			}
@@ -198,17 +216,23 @@ public class RunLoop {
 	}
 
 	public void firstCustomers() {
+		int count = 0;
 		for (int i = 0; i < allLines.size(); i++) {
 			if (!allLines.get(i).customers.isEmpty()) {
-				allLines.get(i).setCurrentCustomer(0);
-				allLines.get(i).currentCustomer.setTickStart(0);
-				allLines.get(i).getCustomerQueue().get(0).setTickStart(0);
+				for (int j = 0; j < allLines.get(i).getTellers().size(); j++) { // loop through all tellers for that line
+					allLines.get(i).getTellers().get(j).setCurrentCustomer(count, allCustomers);
+					allLines.get(i).getTellers().get(j).currentCustomer.setTickStart(0);
+					allLines.get(i).getTellers().get(j).currentCustomer.calcTransTime(allLines.get(i).getTellers().get(j));
+					allLines.get(i).getCustomerQueue().get(0).setTickStart(0);
+					allLines.get(i).setIndex(allLines.get(i).getIndex()+1); // holds spot in customer array list
+					count++;
+				}
 			}
 		}
 	}
-	
+
 	public void endSimulation() {
-		
+
 	}
 
 	public void updateLines() {
@@ -216,31 +240,33 @@ public class RunLoop {
 		int numLinesFinished = 0;
 		for (int i = 0; i < allLines.size(); i++) {
 			Line tempL = allLines.get(i);
-			Teller tempT = tempL.getTeller();
-			Customer tempC = tempL.getCurrentCustomer();
-			System.out.println("processing customer: " + tempC.getIdInt());
 
-			int custInd = tempL.getCustomerQueue().indexOf(tempC);
 			System.out.println("current tick: " + tick);
-			if(tick >= simulationTime) { // if out of time
+			if (tick >= simulationTime) { // if out of time
 				simulationRunning = false;
-			}			
-			else if(!tempL.hasNextCustomer()){ // if at end of line
+			} else if (tempL.index >= tempL.customers.size()) { // if at end of line
 				numLinesFinished++;
-				System.out.println("at end of line: " + (tempL.getIdInt()+1));
-			}
-			else if (tick - tempC.getTickStart() >= tempC.getTransTime()) { // if the user is done being in the line, switch to the next user
-				allLines.get(i).getCurrentCustomer().setTickEnd(tick);
-				if (allLines.get(i).getCustomerQueue().indexOf(tempC) < allLines.get(i).getCustomerQueue().size() - 1) { // if there's another customer to get
-					allLines.get(i).nextCustomer();
-					allLines.get(i).getCurrentCustomer().setTickStart(tick);
-					allLines.get(i).getCustomerQueue()
-							.get(allLines.get(i).getCustomerQueue().indexOf(allLines.get(i).getCurrentCustomer()))
-							.setTickStart(tick);
+				System.out.println("at end of line: " + (tempL.getIdInt() + 1));
+			} else {
+			for(int j = 0; j < tempL.getTellers().size(); j++) {
+				Teller tempT = allLines.get(i).getTellers().get(j);
+				Customer tempC = tempT.currentCustomer;
+				System.out.println("processing customer: " + tempC.getIdInt());
+				if (tick - tempC.getTickStart() >= tempC.getTransTime()) { // if the user at this teller is done being in line switch to the next user
+						allLines.get(i).getTellers().get(j).currentCustomer.setTickEnd(tick);
+						
+					if (allLines.get(i).getCustomerQueue().indexOf(tempC) < allLines.get(i).getCustomerQueue().size() - 1) { // if there's another user to get
+							allLines.get(i).getTellers().get(j).setCurrentCustomer(allLines.get(i).getIndex(), allCustomers); // sets customer at index that the line is at
+							allLines.get(i).getTellers().get(j).currentCustomer.setTickStart(tick); // sets that customer's tick
+							allLines.get(i).getTellers().get(j).currentCustomer.calcTransTime(allLines.get(i).getTellers().get(j)); // calculates time for that customer
+							allLines.get(i).setIndex(allLines.get(i).getIndex() + 1); // updates index
+					}
 				}
 			}
 		}
-		if(numLinesFinished >= numLines) {
+		}
+		
+		if (numLinesFinished >= numLines) {
 			simulationRunning = false;
 		}
 	}

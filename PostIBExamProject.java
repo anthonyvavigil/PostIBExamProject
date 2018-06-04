@@ -222,10 +222,12 @@ public class PostIBExamProject extends javax.swing.JFrame {
         tellers = (int)jSpinner5.getValue();
         randTeller = !jCheckBox1.isSelected();
         randCustomer = !jCheckBox2.isSelected();
+        numTellers = (int)jSpinner5.getValue();
+        System.out.println(numTellers);
         
    
         
-        RunLoop run = new RunLoop(lAssignment, customerNum, lines, randTeller, randCustomer, cGeneration, cGenRate, simLength);
+        RunLoop run = new RunLoop(lAssignment, customerNum, lines, randTeller, randCustomer, cGeneration, cGenRate, simLength, numTellers);
         run.runSim();    
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -300,7 +302,7 @@ public class PostIBExamProject extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
     private String lAssignment, cGeneration;
-    private int lines, tellers, simLength, customerNum, cGenRate;
+    private int lines, tellers, simLength, customerNum, cGenRate, numTellers;
     private boolean randTeller, randCustomer;
 }
 

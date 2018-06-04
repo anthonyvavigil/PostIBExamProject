@@ -59,7 +59,7 @@ public class Customer {
     	this.line = assignedTo;
     }
     //assigns the customer to a line based on estimated time
-    public void timeAssign(ArrayList<Line> lines) {
+    /*public void timeAssign(ArrayList<Line> lines) {
     	double min = lines.get(0).getEstimatedTime();
     	Line assignedTo = lines.get(0);
     	for(int i = 0; i < lines.size(); i++) {
@@ -69,15 +69,15 @@ public class Customer {
     		}
     	}
     	this.line = assignedTo;
-    }
+    }*/
     //assigns the customer to a line randomly
     public void randomAssign(ArrayList<Line> lines) {
     	Random r = new Random();
     	int index = r.nextInt(lines.size());
     	this.line = lines.get(index);
     }
-    public int calcTransTime() { // calculates time for this customer
-    	transTime = (speed * line.getTeller().getSpeed())/10;
+    public int calcTransTime(Teller teller) { // calculates time for this customer
+    	transTime = (speed * teller.getSpeed())/10;
     	return transTime;
     }
     
