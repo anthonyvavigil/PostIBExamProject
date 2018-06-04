@@ -47,7 +47,7 @@ public class RunLoop {
 	public void bugTesting() {
 		this.assignmentType = "SIMPLE";
 		this.numLines = 15;
-		this.numCustomers = 10000;
+		this.numCustomers = 1000;
 		this.isFixedCustomerSpeeds = false;
 		this.isFixedTellerSpeeds = false;
 		this.simulationTime = 1000000000;
