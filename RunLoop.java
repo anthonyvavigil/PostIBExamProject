@@ -29,8 +29,6 @@ public class RunLoop {
 	// Maximum and minimum simulation times
 	public static final int minSimulationTime = 10;
 	public static final int maxSimulationTime = 1000000000;
-        
-        
 
 	public RunLoop(String assignmentType, int numCustomers, int numLines, boolean isFixedTellerSpeeds,
 			boolean isFixedCustomerSpeeds, String spawnType, int spawnRate, int simulationTime, int numTellers) {
@@ -46,25 +44,17 @@ public class RunLoop {
 											// that'd be stupid
 		this.numTellers = numTellers;
 		bugTesting();
-                setupArrays();
 	}
 
 	public void bugTesting() {
 		this.assignmentType = "RANDOM";
 		this.numLines = 3;
-		this.numCustomers = 100;
+		this.numCustomers = 1000;
 		this.isFixedCustomerSpeeds = false;
 		this.isFixedTellerSpeeds = false;
 		this.simulationTime = 1000000000;
 		this.numTellers = 10;
 	}
-        
-        public void setupArrays() {
-            long[] startArray = new long[numCustomers];
-            long[] endArray = new long[numCustomers];
-            int[] totTime = new int[numCustomers];
-            
-        }
 
 	private long tick;
 	private String assignmentType;
@@ -195,6 +185,28 @@ public class RunLoop {
 			addCustomersToLineObjects();
 		}
 	}
+	public void assignCustomersWhileRunning(int lowerInd, int upperInd, String assignType) {
+		// assigns customers to lines
+
+		for (int i = lowerInd; i < upperInd; i++) {
+			Customer temp = allCustomers.get(i);
+
+			if (assignType.toUpperCase().equals("SIMPLE")) {
+				temp.simpleAssign(allLines);
+			} /*
+				 * else if (assignType.toUpperCase().equals("TIME")) {
+				 * temp.timeAssign(allLines); }
+				 */else if (assignType.toUpperCase().equals("RANDOM")) {
+				temp.randomAssign(allLines);
+			}
+			allCustomers.remove(i);
+			// temp.setTransTime(temp.calcTransTime());
+
+			allCustomers.add(i, temp);
+			addCustomersToLineObjects();
+		}
+	}
+
 
 	public void addCustomersToLineObjects() { // does what the method's called
 		for (int i = 0; i < allCustomers.size(); i++) {
@@ -242,7 +254,7 @@ public class RunLoop {
 	}
 
 	public void endSimulation() {
-
+		
 	}
 
 	public void updateLines() {
@@ -263,7 +275,6 @@ public class RunLoop {
 				Customer tempC = tempT.currentCustomer;
 				System.out.println("processing customer: " + tempC.getIdInt());
 				if (tick - tempC.getTickStart() >= tempC.getTransTime()) { // if the user at this teller is done being in line switch to the next user
-                                                
 						allLines.get(i).getTellers().get(j).currentCustomer.setTickEnd(tick);
 						
 					if (allLines.get(i).getCustomerQueue().indexOf(tempC) < allLines.get(i).getCustomerQueue().size() - 1) { // if there's another user to get
