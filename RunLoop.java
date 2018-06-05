@@ -55,12 +55,14 @@ public class RunLoop {
 		this.isFixedTellerSpeeds = false;
 		this.simulationTime = 1000000000;
 		this.numTellers = 10;
+		this.spawnRate = 5;
+		this.spawnType = "WAVES";
 	}
         
         public void initializeArrays() {
-            startTick = new long[numCustomers];
-            endTick = new long[numCustomers];
-            tickTime = new int[numCustomers];
+            startTick = new long[10000000];
+            endTick = new long[10000000];
+            tickTime = new int[10000000];
             
         }
 
@@ -237,6 +239,20 @@ public class RunLoop {
 			}
 		}
 	}
+	
+	public void addNewCustomersToLineOjbects(int lowerInd, int upperInd) {
+		for (int i = lowerInd; i < upperInd; i++) {
+			Customer temp = allCustomers.get(i);
+			Line tempL = temp.getLine();
+			if (allLines.indexOf(tempL) >= 0) {
+
+				if (!allLines.get(allLines.indexOf(tempL)).customers.contains(temp)) {
+					System.out.println("Adding customer: " + temp.getIdInt() + " to line: " + tempL.getIdInt());
+					allLines.get(allLines.indexOf(tempL)).addCustomer(temp);
+				}
+			}
+		}
+	}
 
 	public void setMaxTime() {
 		if (simulationTime > maxSimulationTime) {
@@ -275,10 +291,36 @@ public class RunLoop {
                 
 		}
 	}
+	
+	public void dynamicCustomers() {
+		if(!spawnType.toUpperCase().equals("INIT")) {
+			if(spawnType.toUpperCase().equals("WAVES")) {
+				if(tick%(100000/spawnRate) == 0) { // accesses every 1000/spawn rate ticks
+					int prevSize = allCustomers.size();
+					addCustomers(10, isFixedCustomerSpeeds);
+					assignCustomersWhileRunning(prevSize, prevSize+10, assignmentType);
+					addNewCustomersToLineOjbects(prevSize, prevSize+10);
+				}
+			} else if (spawnType.toUpperCase().equals("RAND")) {
+				Random r = new Random();
+				int tempR = r.nextInt(spawnRate);
+				if(tick%(100/tempR) == 0) { // accesses every 100/temporary random int ticks
+					int prevSize = allCustomers.size();
+					addCustomers(10, isFixedCustomerSpeeds);
+					assignCustomersWhileRunning(prevSize, prevSize+10, assignmentType);
+					addNewCustomersToLineOjbects(prevSize, prevSize+10);
+				}
+			} else {
+				System.out.println("Could not find spawn type");
+			}
+		}
+	}
 
 	public void updateLines() {
 		// update each line, checking to see which actions need to be performed
+			dynamicCustomers();
 		int numLinesFinished = 0;
+		
 		for (int i = 0; i < allLines.size(); i++) {
 			Line tempL = allLines.get(i);
 
@@ -309,7 +351,7 @@ public class RunLoop {
 		
 		if (numLinesFinished >= numLines) {
 			simulationRunning = false;
-                }
-                        
+		}                     
 	}
 }
+
