@@ -44,17 +44,25 @@ public class RunLoop {
 											// that'd be stupid
 		this.numTellers = numTellers;
 		bugTesting();
+                initializeArrays();
 	}
 
 	public void bugTesting() {
 		this.assignmentType = "RANDOM";
 		this.numLines = 3;
-		this.numCustomers = 1000;
+		this.numCustomers = 100;
 		this.isFixedCustomerSpeeds = false;
 		this.isFixedTellerSpeeds = false;
 		this.simulationTime = 1000000000;
 		this.numTellers = 10;
 	}
+        
+        public void initializeArrays() {
+            startTick = new long[numCustomers];
+            endTick = new long[numCustomers];
+            tickTime = new int[numCustomers];
+            
+        }
 
 	private long tick;
 	private String assignmentType;
@@ -70,6 +78,9 @@ public class RunLoop {
 	public ArrayList<Teller> allTellers = new ArrayList();
 	public ArrayList<Customer> allCustomers = new ArrayList();
 	public ArrayList<Line> allLines = new ArrayList();
+        private long[] startTick;
+        private long[] endTick;
+        private int[] tickTime;
 
 	public void runSim() {
 		tick = 0;
@@ -172,11 +183,14 @@ public class RunLoop {
 
 			if (assignType.toUpperCase().equals("SIMPLE")) {
 				temp.simpleAssign(allLines);
+                                startTick[i] = tick;
 			} /*
 				 * else if (assignType.toUpperCase().equals("TIME")) {
 				 * temp.timeAssign(allLines); }
 				 */else if (assignType.toUpperCase().equals("RANDOM")) {
 				temp.randomAssign(allLines);
+                                startTick[i] = tick;
+                                
 			}
 			allCustomers.remove(i);
 			// temp.setTransTime(temp.calcTransTime());
@@ -193,11 +207,13 @@ public class RunLoop {
 
 			if (assignType.toUpperCase().equals("SIMPLE")) {
 				temp.simpleAssign(allLines);
+                                startTick[i] = tick;
 			} /*
 				 * else if (assignType.toUpperCase().equals("TIME")) {
 				 * temp.timeAssign(allLines); }
 				 */else if (assignType.toUpperCase().equals("RANDOM")) {
 				temp.randomAssign(allLines);
+                                startTick[i] = tick;
 			}
 			allCustomers.remove(i);
 			// temp.setTransTime(temp.calcTransTime());
@@ -254,7 +270,10 @@ public class RunLoop {
 	}
 
 	public void endSimulation() {
-		
+		for(int i = 0; i < startTick.length; i++) {
+                    System.out.println("Customer " + i + " started at: " + startTick[i]);
+                
+		}
 	}
 
 	public void updateLines() {
@@ -290,6 +309,7 @@ public class RunLoop {
 		
 		if (numLinesFinished >= numLines) {
 			simulationRunning = false;
-		}
+                }
+                        
 	}
 }
