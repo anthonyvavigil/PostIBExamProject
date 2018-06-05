@@ -62,7 +62,7 @@ public class RunLoop {
         public void initializeArrays() {
             startTick = new long[10000000];
             endTick = new long[10000000];
-            tickTime = new int[10000000];
+            tickTime = new long[10000000];
             
         }
 
@@ -82,7 +82,7 @@ public class RunLoop {
 	public ArrayList<Line> allLines = new ArrayList();
         private long[] startTick;
         private long[] endTick;
-        private int[] tickTime;
+        private long[] tickTime;
 
 	public void runSim() {
 		tick = 0;
@@ -286,8 +286,11 @@ public class RunLoop {
 	}
 
 	public void endSimulation() {
-		for(int i = 0; i < startTick.length; i++) {
-                    System.out.println("Customer " + i + " started at: " + startTick[i]);
+            WriteFile writer = new WriteFile("output.txt", true);
+		for(int i = 0; i < numCustomers; i++) {
+                    tickTime[i] = endTick[i] - startTick[i];
+                    //writer.write(Long.toString(tickTime[i]));
+                    //System.out.println("Customer " + i + " started at: " + startTick[i]);
                 
 		}
 	}
@@ -336,7 +339,8 @@ public class RunLoop {
 				Customer tempC = tempT.currentCustomer;
 				System.out.println("processing customer: " + tempC.getIdInt());
 				if (tick - tempC.getTickStart() >= tempC.getTransTime()) { // if the user at this teller is done being in line switch to the next user
-						allLines.get(i).getTellers().get(j).currentCustomer.setTickEnd(tick);
+                                    endTick[tempC.getIdInt()] = tick;
+                                    allLines.get(i).getTellers().get(j).currentCustomer.setTickEnd(tick);
 						
 					if (allLines.get(i).getCustomerQueue().indexOf(tempC) < allLines.get(i).getCustomerQueue().size() - 1) { // if there's another user to get
 							allLines.get(i).getTellers().get(j).setCurrentCustomer(allLines.get(i).getIndex(), allCustomers); // sets customer at index that the line is at
