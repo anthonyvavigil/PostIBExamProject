@@ -292,7 +292,7 @@ public class RunLoop {
             WriteFile writer = new WriteFile("output.txt", true);
 		for(int i = 0; i < numCustomers; i++) {
                     tickTime[i] = endTick[i] - startTick[i];
-                    //writer.write(Long.toString(tickTime[i]));
+                    writer.write(Long.toString(tickTime[i]));
                     //System.out.println("Customer " + i + " started at: " + startTick[i]);
                 
 		}

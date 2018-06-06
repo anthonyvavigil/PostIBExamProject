@@ -2,6 +2,7 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger; 
 
@@ -19,7 +20,7 @@ public class WriteFile {
     
     private String filePath;
     private boolean append = true;
-    BufferedWriter writer = null;
+    PrintWriter writer = null;
     
     public WriteFile(String path, boolean ifAppend) {
         this.filePath = path;
@@ -29,8 +30,8 @@ public class WriteFile {
     
     public void write(String text) {
         try {
-            writer = new BufferedWriter(new FileWriter(filePath, append));
-            writer.write(text);
+            writer = new PrintWriter(new BufferedWriter(new FileWriter(filePath, append)));
+            writer.println(text);
         } catch (IOException ex) {
             Logger.getLogger(WriteFile.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
