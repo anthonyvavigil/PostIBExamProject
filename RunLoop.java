@@ -5,6 +5,7 @@
  * and open the template in the editor.
  */
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
@@ -34,7 +35,7 @@ public class RunLoop {
 			boolean isFixedCustomerSpeeds, String spawnType, int spawnRate, int simulationTime, int numTellers) {
 		this.assignmentType = assignmentType;
 		this.numLines = numLines;
-		this.numCustomers = numCustomers;
+		this.numCustomers = numCustomers; // total number of customers that will be spawned
 		this.numLines = numLines;
 		this.isFixedTellerSpeeds = isFixedTellerSpeeds;
 		this.isFixedCustomerSpeeds = isFixedCustomerSpeeds;
@@ -56,16 +57,17 @@ public class RunLoop {
 		this.simulationTime = 1000000000;
 		this.numTellers = 10;
 		this.spawnRate = 5;
-		this.spawnType = "WAVES";
+		this.spawnType = "RAND";
 	}
         
         public void initializeArrays() {
-            startTick = new long[10000000];
-            endTick = new long[10000000];
-            tickTime = new long[10000000];
+            startTick = new long[numCustomers];
+            endTick = new long[numCustomers];
+            tickTime = new long[numCustomers];
             
         }
 
+    public int customersInLine = 0;
 	private long tick;
 	private String assignmentType;
 	private int numCustomers;
@@ -115,8 +117,7 @@ public class RunLoop {
 		addTellers(numTellers, isFixedTellerSpeeds);
 		assignTellers();
 		addCustomers(numCustomers, isFixedCustomerSpeeds);
-		assignCustomers(assignmentType); // addCustomersToLineObjects(); // need
-											// to be merged into one method
+		assignCustomersWhileRunning(0, (int) (numCustomers*15)/100, assignmentType); // adds 15% of the customers, the rest will be added later
 		firstCustomers();
 
 		setMaxTime();
@@ -199,11 +200,12 @@ public class RunLoop {
 
 			allCustomers.add(i, temp);
 			addCustomersToLineObjects();
+			customersInLine++;
 		}
 	}
 	public void assignCustomersWhileRunning(int lowerInd, int upperInd, String assignType) {
 		// assigns customers to lines
-
+		System.out.println(lowerInd + ", " + upperInd);
 		for (int i = lowerInd; i < upperInd; i++) {
 			Customer temp = allCustomers.get(i);
 
@@ -222,6 +224,7 @@ public class RunLoop {
 
 			allCustomers.add(i, temp);
 			addCustomersToLineObjects();
+			customersInLine++;
 		}
 	}
 
@@ -298,20 +301,31 @@ public class RunLoop {
 	public void dynamicCustomers() {
 		if(!spawnType.toUpperCase().equals("INIT")) {
 			if(spawnType.toUpperCase().equals("WAVES")) {
-				if(tick%(100000/spawnRate) == 0) { // accesses every 1000/spawn rate ticks
-					int prevSize = allCustomers.size();
-					addCustomers(10, isFixedCustomerSpeeds);
-					assignCustomersWhileRunning(prevSize, prevSize+10, assignmentType);
-					addNewCustomersToLineOjbects(prevSize, prevSize+10);
+				if(tick%(100/spawnRate) == 0) { // accesses every 1000/spawn rate ticks
+					// adds 5% of the customers to the line
+					int a = customersInLine;
+					if((((int) (numCustomers*5)/100) + customersInLine) >= numCustomers-1){
+						assignCustomersWhileRunning(customersInLine, customersInLine+(numCustomers-customersInLine), assignmentType);
+					} else {
+						assignCustomersWhileRunning(customersInLine, (((int) (numCustomers*5)/100) + customersInLine), assignmentType); 
+					}
+					int b = customersInLine;
+					addNewCustomersToLineOjbects(b-a, b);
+					System.out.println("added customers while running");
 				}
 			} else if (spawnType.toUpperCase().equals("RAND")) {
 				Random r = new Random();
-				int tempR = r.nextInt(spawnRate);
+				int tempR = r.nextInt(spawnRate)+1;
 				if(tick%(100/tempR) == 0) { // accesses every 100/temporary random int ticks
-					int prevSize = allCustomers.size();
-					addCustomers(10, isFixedCustomerSpeeds);
-					assignCustomersWhileRunning(prevSize, prevSize+10, assignmentType);
-					addNewCustomersToLineOjbects(prevSize, prevSize+10);
+					if(customersInLine < numCustomers) {
+						int a = customersInLine;
+						assignCustomersWhileRunning(customersInLine, customersInLine + 1, assignmentType);
+						int b = customersInLine;
+						addNewCustomersToLineOjbects(b-a, b);
+						System.out.println("added customers while running");
+					} else {
+						simulationRunning = false;
+					}
 				}
 			} else {
 				System.out.println("Could not find spawn type");
@@ -321,23 +335,22 @@ public class RunLoop {
 
 	public void updateLines() {
 		// update each line, checking to see which actions need to be performed
-			dynamicCustomers();
+		dynamicCustomers();
 		int numLinesFinished = 0;
-		
+		System.out.println("current tick: " + tick);
+		System.out.println("cust in line: " + customersInLine);
+		System.out.println("num cust: " + numCustomers);
 		for (int i = 0; i < allLines.size(); i++) {
 			Line tempL = allLines.get(i);
 
-			System.out.println("current tick: " + tick);
 			if (tick >= simulationTime) { // if out of time
 				simulationRunning = false;
 			} else if (tempL.index >= tempL.customers.size()) { // if at end of line
 				numLinesFinished++;
-				System.out.println("at end of line: " + (tempL.getIdInt() + 1));
 			} else {
 			for(int j = 0; j < tempL.getTellers().size(); j++) {
 				Teller tempT = allLines.get(i).getTellers().get(j);
 				Customer tempC = tempT.currentCustomer;
-				System.out.println("processing customer: " + tempC.getIdInt());
 				if (tick - tempC.getTickStart() >= tempC.getTransTime()) { // if the user at this teller is done being in line switch to the next user
                                     endTick[tempC.getIdInt()] = tick;
                                     allLines.get(i).getTellers().get(j).currentCustomer.setTickEnd(tick);
@@ -353,7 +366,7 @@ public class RunLoop {
 		}
 		}
 		
-		if (numLinesFinished >= numLines) {
+		if (numLinesFinished >= numLines && customersInLine >= numCustomers-1) {
 			simulationRunning = false;
 		}                     
 	}
