@@ -55,8 +55,8 @@ public class RunLoop {
 		this.isFixedCustomerSpeeds = false;
 		this.isFixedTellerSpeeds = false;
 		this.simulationTime = 1000000000;
-		this.numTellers = 10;
-		this.spawnRate = 5;
+		this.numTellers = 3;
+		this.spawnRate = 1;
 		this.spawnType = "RAND";
 	}
         
@@ -85,6 +85,9 @@ public class RunLoop {
         private long[] startTick;
         private long[] endTick;
         private long[] tickTime;
+        private int cCount = 0;
+        private int cDone = 0;
+        private double percentCutoff = .05;
 
 	public void runSim() {
 		tick = 0;
@@ -95,7 +98,7 @@ public class RunLoop {
 		// before item generation
 
 		while (simulationRunning) {
-			System.out.println("running while");
+			//System.out.println("running while");
 			/*
 			 * try { Thread.sleep(20); } catch (InterruptedException ex) {
 			 * Logger.getLogger(RunLoop.class.getName()).log(Level.SEVERE, null,
@@ -121,7 +124,7 @@ public class RunLoop {
 		firstCustomers();
 
 		setMaxTime();
-		System.out.println("initialized");
+		//System.out.println("initialized");
 	}
 
 	// initialize objects
@@ -132,8 +135,8 @@ public class RunLoop {
 		while (count < allTellers.size()) {
 			int lineindex = count % allLines.size();
 			allLines.get(lineindex).addTeller(allTellers.get(count));
-			System.out.println("assigning teller " + allTellers.get(count).getIdInt() + " to line "
-					+ allLines.get(lineindex).idInt);
+			//System.out.println("assigning teller " + allTellers.get(count).getIdInt() + " to line "
+					//+ allLines.get(lineindex).idInt);
 			count++;
 		}
 	}
@@ -159,11 +162,13 @@ public class RunLoop {
 		for (int i = 0; i < cNum; i++) {
 			Customer temp = null;
 			if (isFixedSpeed) {
-				temp = new Customer(i, customerSpeedFixed);
+				temp = new Customer(cCount, customerSpeedFixed);
+                                cCount++;
 			} else {
 				Random r = new Random();
 				int tSp = r.nextInt((customerSpeedsUpperBound - customerSpeedsLowerBound)) + customerSpeedsLowerBound;
-				temp = new Customer(i, tSp);
+				temp = new Customer(cCount, tSp);
+                                cCount++;
 			}
 			allCustomers.add(temp);
 		}
@@ -174,7 +179,7 @@ public class RunLoop {
 		for (int i = 0; i < lNum; i++) {
 			// attaches a teller to this line object
 			allLines.add(new Line(i));
-			System.out.println("adding line: " + i);
+			//System.out.println("adding line: " + i);
 		}
 	}
 
@@ -205,7 +210,7 @@ public class RunLoop {
 	}
 	public void assignCustomersWhileRunning(int lowerInd, int upperInd, String assignType) {
 		// assigns customers to lines
-		System.out.println(lowerInd + ", " + upperInd);
+		//System.out.println(lowerInd + ", " + upperInd);
 		for (int i = lowerInd; i < upperInd; i++) {
 			Customer temp = allCustomers.get(i);
 
@@ -236,7 +241,7 @@ public class RunLoop {
 			if (allLines.indexOf(tempL) >= 0) {
 
 				if (!allLines.get(allLines.indexOf(tempL)).customers.contains(temp)) {
-					System.out.println("Adding customer: " + temp.getIdInt() + " to line: " + tempL.getIdInt());
+					//System.out.println("Adding customer: " + temp.getIdInt() + " to line: " + tempL.getIdInt());
 					allLines.get(allLines.indexOf(tempL)).addCustomer(temp);
 				}
 			}
@@ -250,7 +255,7 @@ public class RunLoop {
 			if (allLines.indexOf(tempL) >= 0) {
 
 				if (!allLines.get(allLines.indexOf(tempL)).customers.contains(temp)) {
-					System.out.println("Adding customer: " + temp.getIdInt() + " to line: " + tempL.getIdInt());
+					//System.out.println("Adding customer: " + temp.getIdInt() + " to line: " + tempL.getIdInt());
 					allLines.get(allLines.indexOf(tempL)).addCustomer(temp);
 				}
 			}
@@ -289,20 +294,26 @@ public class RunLoop {
 	}
 
 	public void endSimulation() {
-            WriteFile writer = new WriteFile("output.txt", true);
+            WriteFile writer = new WriteFile("output8.txt", true);
 		for(int i = 0; i < numCustomers; i++) {
                     tickTime[i] = endTick[i] - startTick[i];
+                    if(tickTime[i] >= 0) {
                     writer.write(Long.toString(tickTime[i]));
-                    //System.out.println("Customer " + i + " started at: " + startTick[i]);
+                    System.out.println("Customer " + i + " started at: " + startTick[i]);
+                    System.out.println("Customer " + i + " ended at: " + endTick[i]);
+                    
+                    }
                 
 		}
+                writer.write("----------------END-OF-DATA----------------");
 	}
 	
 	public void dynamicCustomers() {
 		if(!spawnType.toUpperCase().equals("INIT")) {
 			if(spawnType.toUpperCase().equals("WAVES")) {
-				if(tick%(100/spawnRate) == 0) { // accesses every 1000/spawn rate ticks
+				if((cDone / numCustomers) >= percentCutoff) { // accesses after every 5% of customers are processed
 					// adds 5% of the customers to the line
+                                        percentCutoff += .05;
 					int a = customersInLine;
 					if((((int) (numCustomers*5)/100) + customersInLine) >= numCustomers-1){
 						assignCustomersWhileRunning(customersInLine, customersInLine+(numCustomers-customersInLine), assignmentType);
@@ -311,7 +322,7 @@ public class RunLoop {
 					}
 					int b = customersInLine;
 					addNewCustomersToLineOjbects(b-a, b);
-					System.out.println("added customers while running");
+					//System.out.println("added customers while running");
 				}
 			} else if (spawnType.toUpperCase().equals("RAND")) {
 				Random r = new Random();
@@ -322,13 +333,13 @@ public class RunLoop {
 						assignCustomersWhileRunning(customersInLine, customersInLine + 1, assignmentType);
 						int b = customersInLine;
 						addNewCustomersToLineOjbects(b-a, b);
-						System.out.println("added customers while running");
+						//System.out.println("added customers while running");
 					} else {
 						simulationRunning = false;
 					}
 				}
 			} else {
-				System.out.println("Could not find spawn type");
+				//System.out.println("Could not find spawn type");
 			}
 		}
 	}
@@ -337,9 +348,9 @@ public class RunLoop {
 		// update each line, checking to see which actions need to be performed
 		dynamicCustomers();
 		int numLinesFinished = 0;
-		System.out.println("current tick: " + tick);
-		System.out.println("cust in line: " + customersInLine);
-		System.out.println("num cust: " + numCustomers);
+		//System.out.println("current tick: " + tick);
+		//System.out.println("cust in line: " + customersInLine);
+		//System.out.println("num cust: " + numCustomers);
 		for (int i = 0; i < allLines.size(); i++) {
 			Line tempL = allLines.get(i);
 
@@ -353,6 +364,8 @@ public class RunLoop {
 				Customer tempC = tempT.currentCustomer;
 				if (tick - tempC.getTickStart() >= tempC.getTransTime()) { // if the user at this teller is done being in line switch to the next user
                                     endTick[tempC.getIdInt()] = tick;
+                                    cDone++;
+                                    System.out.println("0000 Customer: " + tempC.getIdInt() + " processed. 0000");
                                     allLines.get(i).getTellers().get(j).currentCustomer.setTickEnd(tick);
 						
 					if (allLines.get(i).getCustomerQueue().indexOf(tempC) < allLines.get(i).getCustomerQueue().size() - 1) { // if there's another user to get
