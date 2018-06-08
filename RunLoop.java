@@ -109,6 +109,8 @@ public class RunLoop {
 			checkTime(tick);
 		}
 		endSimulation();
+                
+                System.out.println("CCount: " + cCount);
 	}
 
 	/*
@@ -216,13 +218,13 @@ public class RunLoop {
 
 			if (assignType.toUpperCase().equals("SIMPLE")) {
 				temp.simpleAssign(allLines);
-                                startTick[i] = tick;
+                                startTick[temp.getIdInt()] = tick;
 			} /*
 				 * else if (assignType.toUpperCase().equals("TIME")) {
 				 * temp.timeAssign(allLines); }
 				 */else if (assignType.toUpperCase().equals("RANDOM")) {
 				temp.randomAssign(allLines);
-                                startTick[i] = tick;
+                                startTick[temp.getIdInt()] = tick;
 			}
 			allCustomers.remove(i);
 			// temp.setTransTime(temp.calcTransTime());
@@ -255,7 +257,7 @@ public class RunLoop {
 			if (allLines.indexOf(tempL) >= 0) {
 
 				if (!allLines.get(allLines.indexOf(tempL)).customers.contains(temp)) {
-					//System.out.println("Adding customer: " + temp.getIdInt() + " to line: " + tempL.getIdInt());
+					System.out.println("Adding customer: " + temp.getIdInt() + " to line: " + tempL.getIdInt());
 					allLines.get(allLines.indexOf(tempL)).addCustomer(temp);
 				}
 			}
@@ -297,15 +299,20 @@ public class RunLoop {
             WriteFile writer = new WriteFile("output10.txt", true);
 		for(int i = 0; i < numCustomers; i++) {
                     tickTime[i] = endTick[i] - startTick[i];
-                    if(tickTime[i] >= 0) {
-                    writer.write(Long.toString(tickTime[i]));
                     System.out.println("Customer " + i + " started at: " + startTick[i]);
                     System.out.println("Customer " + i + " ended at: " + endTick[i]);
+                    
+                    if(tickTime[i] >= 0) {
+                    writer.write(Long.toString(tickTime[i]));
+                    //System.out.println("Customer " + i + " started at: " + startTick[i]);
+                    //System.out.println("Customer " + i + " ended at: " + endTick[i]);
+                    
                     
                     }
                 
 		}
                 writer.write("----------------END-OF-DATA----------------");
+                System.out.println("cDone: " + cDone);
 	}
 	
 	public void dynamicCustomers() {
