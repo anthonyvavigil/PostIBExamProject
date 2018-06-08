@@ -294,7 +294,7 @@ public class RunLoop {
 	}
 
 	public void endSimulation() {
-            WriteFile writer = new WriteFile("output8.txt", true);
+            WriteFile writer = new WriteFile("output10.txt", true);
 		for(int i = 0; i < numCustomers; i++) {
                     tickTime[i] = endTick[i] - startTick[i];
                     if(tickTime[i] >= 0) {

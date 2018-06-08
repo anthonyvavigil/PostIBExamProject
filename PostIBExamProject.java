@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import java.awt.event.WindowEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -228,7 +229,9 @@ public class PostIBExamProject extends javax.swing.JFrame {
    
         
         RunLoop run = new RunLoop(lAssignment, customerNum, lines, randTeller, randCustomer, cGeneration, cGenRate, simLength, numTellers);
-        run.runSim();    
+        run.runSim();
+        dispose();
+        System.exit(0);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
