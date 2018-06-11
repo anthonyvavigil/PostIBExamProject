@@ -45,12 +45,12 @@ public class Teller {
     	System.out.println("setting current customer");
     	if(index > 0 && index < customers.size()) {
     		currentCustomer = customers.get(index);
-    		System.out.println("successfully set customer");
+    		//System.out.println("successfully set customer");
     	} else if (index == 0 && !customers.isEmpty()){
     		currentCustomer = customers.get(0);
-    		System.out.println("index was 0");
+    		//System.out.println("index was 0");
     	} else {
-    		System.out.println("error setting customer, index : " + index + ", customer size : " + customers.size() + ", isEmpty : " + customers.isEmpty());
+    		//System.out.println("error setting customer, index : " + index + ", customer size : " + customers.size() + ", isEmpty : " + customers.isEmpty());
     	}
     }
     

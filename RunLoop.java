@@ -32,7 +32,7 @@ public class RunLoop {
 	public static final int maxSimulationTime = 1000000000;
 
 	public RunLoop(String assignmentType, int numCustomers, int numLines, boolean isFixedTellerSpeeds,
-			boolean isFixedCustomerSpeeds, String spawnType, int spawnRate, int simulationTime, int numTellers) {
+			boolean isFixedCustomerSpeeds, String spawnType, int spawnRate, int simulationTime, int numTellers, String fName) {
 		this.assignmentType = assignmentType;
 		this.numLines = numLines;
 		this.numCustomers = numCustomers; // total number of customers that will be spawned
@@ -42,22 +42,23 @@ public class RunLoop {
 		this.spawnType = spawnType;
 		this.spawnRate = spawnRate;
 		this.simulationTime = 100000000; // not changeable by user because
-											// that'd be stupid
+		this.fileName = fName;									// that'd be stupid
 		this.numTellers = numTellers;
-		bugTesting();
+		//bugTesting();
                 initializeArrays();
 	}
 
 	public void bugTesting() {
 		this.assignmentType = "RANDOM";
 		this.numLines = 3;
-		this.numCustomers = 100;
+		this.numCustomers = 150;
 		this.isFixedCustomerSpeeds = false;
 		this.isFixedTellerSpeeds = false;
 		this.simulationTime = 1000000000;
 		this.numTellers = 3;
 		this.spawnRate = 1;
 		this.spawnType = "RAND";
+                this.fileName = "BIG";
 	}
         
         public void initializeArrays() {
@@ -88,6 +89,7 @@ public class RunLoop {
         private int cCount = 0;
         private int cDone = 0;
         private double percentCutoff = .05;
+        private String fileName = "output";
 
 	public void runSim() {
 		tick = 0;
@@ -110,7 +112,7 @@ public class RunLoop {
 		}
 		endSimulation();
                 
-                System.out.println("CCount: " + cCount);
+                //System.out.println("CCount: " + cCount);
 	}
 
 	/*
@@ -257,7 +259,7 @@ public class RunLoop {
 			if (allLines.indexOf(tempL) >= 0) {
 
 				if (!allLines.get(allLines.indexOf(tempL)).customers.contains(temp)) {
-					System.out.println("Adding customer: " + temp.getIdInt() + " to line: " + tempL.getIdInt());
+					//System.out.println("Adding customer: " + temp.getIdInt() + " to line: " + tempL.getIdInt());
 					allLines.get(allLines.indexOf(tempL)).addCustomer(temp);
 				}
 			}
@@ -296,13 +298,14 @@ public class RunLoop {
 	}
 
 	public void endSimulation() {
-            WriteFile writer = new WriteFile("output10.txt", true);
+            fileName = (fileName + ".txt");
+            WriteFile writer = new WriteFile(fileName, true);
 		for(int i = 0; i < numCustomers; i++) {
                     tickTime[i] = endTick[i] - startTick[i];
-                    System.out.println("Customer " + i + " started at: " + startTick[i]);
-                    System.out.println("Customer " + i + " ended at: " + endTick[i]);
+                    //System.out.println("Customer " + i + " started at: " + startTick[i]);
+                    //System.out.println("Customer " + i + " ended at: " + endTick[i]);
                     
-                    if(tickTime[i] >= 0) {
+                    if(tickTime[i] > 0) {
                     writer.write(Long.toString(tickTime[i]));
                     //System.out.println("Customer " + i + " started at: " + startTick[i]);
                     //System.out.println("Customer " + i + " ended at: " + endTick[i]);
@@ -312,7 +315,7 @@ public class RunLoop {
                 
 		}
                 writer.write("----------------END-OF-DATA----------------");
-                System.out.println("cDone: " + cDone);
+                //System.out.println("cDone: " + cDone);
 	}
 	
 	public void dynamicCustomers() {
@@ -372,8 +375,12 @@ public class RunLoop {
 				if (tick - tempC.getTickStart() >= tempC.getTransTime()) { // if the user at this teller is done being in line switch to the next user
                                     endTick[tempC.getIdInt()] = tick;
                                     cDone++;
+                                    for(int c = 0; c < allCustomers.size(); c++) {
+                                        System.out.println("Customer " + c + "'s ID: " + allCustomers.get(c).getIdInt());
+                                    }
                                     System.out.println("0000 Customer: " + tempC.getIdInt() + " processed. 0000");
                                     allLines.get(i).getTellers().get(j).currentCustomer.setTickEnd(tick);
+                                    
 						
 					if (allLines.get(i).getCustomerQueue().indexOf(tempC) < allLines.get(i).getCustomerQueue().size() - 1) { // if there's another user to get
 							allLines.get(i).getTellers().get(j).setCurrentCustomer(allLines.get(i).getIndex(), allCustomers); // sets customer at index that the line is at
@@ -391,4 +398,7 @@ public class RunLoop {
 		}                     
 	}
 }
+
+
+
 
